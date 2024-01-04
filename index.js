@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const users = require('./MOCK_DATA.json');
 const fs = require('fs');
+const { Console } = require('console');
 app.get('/user', (req, res) => {
     const html = `
         <ul>
@@ -12,6 +13,24 @@ app.get('/user', (req, res) => {
 })
 
 
+app.use((req, res, next)=>{
+    console.log("Hello, Middleware 1");
+    console.log("Time: ",Date.now());
+    req.name = "Saswata";
+    // res.send("Hello, Middleware 1");
+    next();
+})
+
+app.use((req, res, next)=>{
+    console.log("Hello, Middleware 2", req.name);
+    // res.send("Hello, Middleware 2");
+    next();
+})
+app.use((req, res,next)=>{
+    fs.appendFile("log.txt", `${Date.now()}: ${req.method} : ${req.path}\n`, (err, data)=>{
+        res.send("File created");
+    })
+})
 // REST API
 app.get('/api/user', (req, res) => {
     return res.json(users);
