@@ -61,8 +61,36 @@ app
         })
     })
     .delete((req, res) => {
-        return res.json({ status: "Pending" });
-    })
+        const id = Number(req.params.id);
+
+        fs.readFile('./MOCK_DATA.json', 'utf8', (err, data) => {
+            if (err) {
+                return res.status(500).json({ status: 'Error reading file' });
+            }
+
+            let updatedUsers = JSON.parse(data);
+
+            // Find the index of the user with the specified ID
+            const userIndex = updatedUsers.findIndex((user) => user.id === id);
+
+            // If the user is found, remove it from the array
+            if (userIndex !== -1) {
+                updatedUsers.splice(userIndex, 1);
+
+                // Write the updated data back to the file
+                fs.writeFile('./MOCK_DATA.json', JSON.stringify(updatedUsers, null, 2), 'utf8', (err) => {
+                    if (err) {
+                        return res.status(500).json({ status: 'Error writing to file' });
+                    }
+
+                    return res.json({ status: 'Success', id: id });
+                });
+            } else {
+                return res.status(404).json({ status: 'User not found' });
+            }
+        });
+    });
+
 
 
 
