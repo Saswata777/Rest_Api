@@ -15,7 +15,7 @@ app.get('/user', (req, res) => {
 
 app.use((req, res, next)=>{
     console.log("Hello, Middleware 1");
-    console.log("Time: ",Date.now());
+    console.log("Time = ",Date.now());
     req.name = "Saswata";
     // res.send("Hello, Middleware 1");
     next();
